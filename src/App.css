@@ -1,0 +1,94 @@
+/* Container styling */
+.data-grid-container {
+    margin: 20px auto;
+    width: 90%; /* Increase the width */
+    max-width: 1280px; /* Match the page layout */
+    min-width: 600px; /* Prevent the grid from collapsing */
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background-color: #ffffff; /* Cleaner background */
+    padding: 1rem; /* Add padding for better spacing */
+}
+
+/* ReactDataGrid styling */
+.react-data-grid {
+    width: 100%; /* Fill the parent container */
+    height: 500px; /* Ensure grid has height */
+    overflow: auto;
+    border: none;
+}
+
+/* Header row styling */
+.react-data-grid .rdg-header-row {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Cell styling */
+.react-data-grid .rdg-cell {
+    padding: 12px;
+    border-right: 1px solid #ddd;
+    font-size: 14px;
+    text-align: left;
+    word-wrap: break-word; /* Prevent text overflow */
+}
+
+/* Alternating row colors */
+.react-data-grid .rdg-row:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Hover effect on rows */
+.react-data-grid .rdg-row:hover {
+    background-color: #e0f7fa;
+    cursor: pointer;
+}
+
+/* Table borders */
+.react-data-grid {
+    border: 1px solid #ddd;
+}
+
+/* Scrollbar styling */
+.react-data-grid .rdg-viewport {
+    scrollbar-width: thin;
+    scrollbar-color: #4CAF50 #f9f9f9;
+}
+
+.react-data-grid .rdg-viewport::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.react-data-grid .rdg-viewport::-webkit-scrollbar-thumb {
+    background: #4CAF50;
+    border-radius: 4px;
+}
+
+.react-data-grid .rdg-viewport::-webkit-scrollbar-track {
+    background: #f9f9f9;
+}
+
+/* Buttons */
+.add-user-btn, .export-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-user-btn:hover, .export-btn:hover {
+    background-color: #0056b3;
+}
