@@ -7,9 +7,16 @@ import {createColumn, getApi, GridSelectionMode} from "@ezgrid/grid-core";
 const App = () => {
     const [rows, setRows] = useState([]);
     const [error, setError] = useState(null);
+    const [hasPermission, setHasPermission] = useState(true);
     let currentRow = null;
 
     useEffect(() => {
+        const roles = localStorage.getItem("role");
+        if (!roles || !roles.includes("ROLE_ADMIN")) {
+            setHasPermission(false);
+            return;
+        }
+
         const fetchData = async () => {
             try {
                 const response = await api.get("api/users", {
@@ -139,6 +146,10 @@ const App = () => {
             alert("An error occurred while deleting the user.");
         }
     };
+
+    if (!hasPermission) {
+        return <p className="error">NOT ENOUGH PERMISSION</p>;
+    }
 
     return (
         <div className="data-grid-container">

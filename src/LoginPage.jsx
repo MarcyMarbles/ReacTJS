@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './LoginPage.css';
 import api from "./api.js";
-import {data} from "react-router-dom";
 
 const LoginPage = () => {
     const [login, setLogin] = useState('');
@@ -15,8 +14,9 @@ const LoginPage = () => {
                 login: login,
                 password: password,
             });
-            const { token } = response.data;
+            const { token, role } = response.data;
             localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
             window.location.href = '/home';
         } catch (err) {
             if (err.response && err.response.data) {
