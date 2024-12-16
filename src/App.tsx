@@ -4,11 +4,23 @@ import api from "./api";
 import {ReactDataGrid} from "@ezgrid/grid-react";
 import {createColumn, getApi, GridSelectionMode} from "@ezgrid/grid-core";
 
+type Role = {
+    name: string;
+};
+
+interface User {
+    id: number;
+    login: string;
+    username: string;
+    password: string;
+    roles: Role[] | null;
+}
+
 const App = () => {
-    const [rows, setRows] = useState([]);
-    const [error, setError] = useState(null);
+    const [rows, setRows] = useState<User[]>([]);
+    const [error, setError] = useState<string | null>(null);
     const [hasPermission, setHasPermission] = useState(true);
-    let currentRow = null;
+    let currentRow: User | null = null;
 
     useEffect(() => {
         const roles = localStorage.getItem("role");
@@ -46,20 +58,17 @@ const App = () => {
                 if (message.type === "BATCH") {
                     setRows((prevRows) => {
                         let updatedRows = [...prevRows];
-                        message.data.forEach((update) => {
+                        message.data.forEach((update: any) => {
                             switch (update.type) {
                                 case "CREATE":
-                                    console.log("Received CREATE update:", update.data);
                                     updatedRows.push(update.data);
                                     break;
                                 case "UPDATE":
-                                    console.log("Received UPDATE update:", update.data);
                                     updatedRows = updatedRows.map((row) =>
-                                        row.id === update.data.id ? {...row, ...update.data} : row
+                                        row.id === update.data.id ? { ...row, ...update.data } : row
                                     );
                                     break;
                                 case "DELETE":
-                                    console.log("Received DELETE update:", update.data);
                                     updatedRows = updatedRows.filter((row) => row.id !== update.data.id);
                                     break;
                                 default:
@@ -71,19 +80,16 @@ const App = () => {
                 } else {
                     switch (message.type) {
                         case "CREATE":
-                            console.log("Received CREATE update:", message.data);
                             setRows((prevRows) => [...prevRows, message.data]);
                             break;
                         case "UPDATE":
-                            console.log("Received UPDATE update:", message.data);
                             setRows((prevRows) =>
                                 prevRows.map((row) =>
-                                    row.id === message.data.id ? {...row, ...message.data} : row
+                                    row.id === message.data.id ? { ...row, ...message.data } : row
                                 )
                             );
                             break;
                         case "DELETE":
-                            console.log("Received DELETE update:", message.data);
                             setRows((prevRows) => prevRows.filter((row) => row.id !== message.data.id));
                             break;
                         default:
@@ -104,7 +110,8 @@ const App = () => {
     const handleAddUser = async () => {
         try {
             const userNumber = rows.length + 1;
-            const newUser = {
+            const newUser: User = {
+                id: 0,
                 login: `user${userNumber}`,
                 password: "password123",
                 username: `User #${userNumber}`,
@@ -125,17 +132,16 @@ const App = () => {
     };
 
     const handleDeleteUser = async () => {
-        console.log("Deleting user:", currentRow);
         if (!currentRow) {
             alert("Please select a row to delete.");
             return;
         }
-
+    
         try {
-            const response = await api.delete(`api/deleteUser/${currentRow}`);
+            const response = await api.delete(`api/deleteUser/${currentRow.id}`);
             if (response.status === 200) {
                 console.log("User deleted successfully:", currentRow);
-                setRows((prevRows) => prevRows.filter((row) => row.id !== currentRow));
+                setRows((prevRows) => prevRows.filter((row) => row.id !== currentRow.id));
                 currentRow = null;
             } else {
                 console.error("Failed to delete user:", response.data);
@@ -169,18 +175,26 @@ const App = () => {
                         enablePaging: true,
                         rowStyleFunction: (node) => {
                             const api = getApi(node);
-                            currentRow = api.getSelectedRows()[0];
+                            const selectedRows = api.getSelectedRows();
+                        
+                            if (selectedRows.length > 0) {
+                                currentRow = selectedRows[0] as User;
+                            } else {
+                                currentRow = null;
+                            }
+                        
+                            return {};
                         },
-                        selectionMode: GridSelectionMode.SingleRow, // Allow single row selection
+                        selectionMode: GridSelectionMode.SingleRow,
                         dataProvider: rows,
-                        uniqueIdentifierOptions: {useField: "id"},
+                        uniqueIdentifierOptions: { useField: "id" },
                         columns: [
                             createColumn("login", "string", "Login"),
                             createColumn("username", "string", "Username"),
                             createColumn("roles.name", "string", "Role"),
                         ],
                     }}
-                    style={{height: "500px", width: "100%"}}
+                    style={{ height: "500px", width: "100%" }}
                 />
             )}
         </div>
