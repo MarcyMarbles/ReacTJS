@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom/client';
 import AdminPage from './components/auth/AdminPage';
 import RegisterSuccess from './components/auth/RegisterSuccess';
 import Layout from './Layout';
+import ConfirmPage from './components/auth/ConfirmPage';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -24,6 +25,7 @@ root.render(
         <Route path="/" element={<AuthPage />} />
         <Route path="/home" element={<App />} />
         <Route path="/admin" element={<AdminPage />}/>
+        <Route path='/confirm' element={<ConfirmPage/>}/>
         <Route path='/successful' element={<RegisterSuccess/>}/>
       </Route>
     </Routes>

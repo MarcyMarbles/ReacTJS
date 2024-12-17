@@ -25,3 +25,12 @@ a:hover {
 body {
   min-height: 100vh;
 }
+
+.nav-link {
+  color: black !important;
+}
+
+.nav-link.active {
+  color: white !important;
+  background-color: black !important;
+}
