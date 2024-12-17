@@ -8,7 +8,7 @@ import AuthPage from './components/auth/AuthPage';
 import App from './App';
 import ReactDOM from 'react-dom/client';
 import AdminPage from './components/auth/AdminPage';
-import RegisterSuccess from './components/auth/registerSuccess';
+import RegisterSuccess from './components/auth/RegisterSuccess';
 import Layout from './Layout';
 
 const rootElement = document.getElementById('root');
