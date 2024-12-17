@@ -11,6 +11,8 @@ import AdminPage from './components/auth/AdminPage';
 import RegisterSuccess from './components/auth/RegisterSuccess';
 import Layout from './Layout';
 import ConfirmPage from './components/auth/ConfirmPage';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -19,15 +21,17 @@ if (!rootElement) {
 
 let root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-  <Router>
-    <Routes>
-      <Route element={<Layout/>}>
-        <Route path="/" element={<AuthPage />} />
-        <Route path="/home" element={<App />} />
-        <Route path="/admin" element={<AdminPage />}/>
-        <Route path='/confirm' element={<ConfirmPage/>}/>
-        <Route path='/successful' element={<RegisterSuccess/>}/>
-      </Route>
-    </Routes>
-  </Router>
+  <Provider store={store}>
+    <Router>
+      <Routes>
+        <Route element={<Layout/>}>
+          <Route path="/" element={<AuthPage />} />
+          <Route path="/home" element={<App />} />
+          <Route path="/admin" element={<AdminPage />}/>
+          <Route path='/confirm' element={<ConfirmPage/>}/>
+          <Route path='/successful' element={<RegisterSuccess/>}/>
+        </Route>
+      </Routes>
+    </Router>
+  </Provider>
 );
