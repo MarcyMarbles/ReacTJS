@@ -34,7 +34,7 @@ const AuthPage: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
-}
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -118,13 +118,13 @@ const AuthPage: React.FC = () => {
             {error && <p className="error">{error}</p>}
 
             <div data-mdb-input-init className="form-outline mb-4">
-              <input type="text" id="loginName" className="form-control" required value={formData.login} onChange={handleChange} />
-              <label className="form-label" htmlFor="loginName">Login</label>
+              <label className="form-label" htmlFor="login">Login</label>
+              <input type="text" id="login" className="form-control" required value={formData.login} onChange={handleChange} />
             </div>
 
             <div data-mdb-input-init className="form-outline mb-4">
-              <input type="password" id="loginPassword" className="form-control" required value={formData.password} onChange={handleChange} />
               <label className="form-label" htmlFor="loginPassword">Password</label>
+              <input type="password" id="password" className="form-control" required value={formData.password} onChange={handleChange} />
             </div>
 
             <div className="row mb-4">
@@ -151,27 +151,27 @@ const AuthPage: React.FC = () => {
           <form className='main-form-container' onSubmit={handleRegister}>
 
             <div data-mdb-input-init className="form-outline mb-4">
-              <input type="text" id="registerName" className="form-control" required value={formData.login} onChange={handleChange}/>
-              <label className="form-label" htmlFor="loginName">Login</label>
+              <label className="form-label" htmlFor="login">Login</label>
+              <input type="text" id="login" name="login" className="form-control" required value={formData.login} onChange={handleChange}/>
             </div>
 
             <div data-mdb-input-init className="form-outline mb-4">
-              <input type="text" id="registerUsername" className="form-control" required value={formData.username} onChange={handleChange}/>
               <label className="form-label" htmlFor="registerUsername">Username</label>
+              <input type="text" id="username" name="username" className="form-control" required value={formData.username} onChange={handleChange}/>
             </div>
             <div data-mdb-input-init className="form-outline mb-4">
-              <input type="email" id="registerEmail" className="form-control" required value={formData.email} onChange={handleChange}/>
               <label className="form-label" htmlFor="registerEmail">Email</label>
+              <input type="email" id="email" name='email' className="form-control" required value={formData.email} onChange={handleChange}/>
             </div>
 
             <div data-mdb-input-init className="form-outline mb-4">
-              <input type="password" id="registerPassword" className="form-control" required value={formData.password} onChange={handleChange}/>
               <label className="form-label" htmlFor="registerPassword">Password</label>
+              <input type="password" id="password" name='password' className="form-control" required value={formData.password} onChange={handleChange}/>
             </div>
 
             <div data-mdb-input-init className="form-outline mb-4">
-              <input type="password" id="registerRepeatPassword" className="form-control" required value={formData.password_confirmation} onChange={handleChange}/>
               <label className="form-label" htmlFor="registerRepeatPassword">Repeat password</label>
+              <input type="password" id="password_confirmation" name='password_confirmation' className="form-control" required value={formData.password_confirmation} onChange={handleChange}/> 
             </div>
 
             <div className="form-check d-flex justify-content-center mb-4">
