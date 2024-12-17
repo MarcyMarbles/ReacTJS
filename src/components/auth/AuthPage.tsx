@@ -72,14 +72,12 @@ const AuthPage: React.FC = () => {
         e.preventDefault();
         setError(null);
 
-        // Клиентская проверка совпадения паролей
         if (formData.password !== formData.password_confirmation) {
             setError("Please, confirm your password correctly!");
             return;
         }
 
         try {
-            // Убираем password_confirmation из тела запроса
             const {username, login, email, password} = formData;
 
             const response = await fetch(apiRegister, {
@@ -150,7 +148,7 @@ const AuthPage: React.FC = () => {
                         </div>
 
                         <button type="submit" data-mdb-button-init data-mdb-ripple-init
-                                className="btn btn-primary btn-block mb-4">Log in
+                                className="btn btn-dark btn-block mb-4">Log in
                         </button>
 
                         <div className="text-center">
@@ -200,7 +198,7 @@ const AuthPage: React.FC = () => {
                         </div>
 
                         <button type="submit" data-mdb-button-init data-mdb-ripple-init
-                                className="btn btn-primary btn-block mb-3">Sign in
+                                className="btn btn-dark btn-block mb-3">Sign in
                         </button>
                     </form>
                 </div>

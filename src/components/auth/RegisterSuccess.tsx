@@ -7,6 +7,8 @@ const RegisterSuccess = () => {
                     <div className="alert alert-success" role="alert">
                         <h4 className="alert-heading">Please,check your e-mail!</h4>
                         <p>We have sent message for confirmation to your email, until then you may log in to your profile!</p>
+
+                        <p>Link expires in 2 hourse!</p>
                     </div>
                 </div>
             </div>
