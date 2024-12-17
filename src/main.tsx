@@ -2,9 +2,14 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import "@ezgrid/grid-core/styles.css"
 import "@ezgrid/grid-core/icons.css"
 import './index.css'
-import LoginPage from './LoginPage';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import AuthPage from './components/auth/AuthPage';
 import App from './App';
 import ReactDOM from 'react-dom/client';
+import AdminPage from './components/auth/AdminPage';
+import RegisterSuccess from './components/auth/registerSuccess';
+import Layout from './Layout';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -15,8 +20,12 @@ let root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <Router>
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/home" element={<App />} />
+      <Route element={<Layout/>}>
+        <Route path="/" element={<AuthPage />} />
+        <Route path="/home" element={<App />} />
+        <Route path="/admin" element={<AdminPage />}/>
+        <Route path='/successful' element={<RegisterSuccess/>}/>
+      </Route>
     </Routes>
   </Router>
 );
