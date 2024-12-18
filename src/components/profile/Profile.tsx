@@ -3,9 +3,11 @@ import { AppDispatch, RootState } from "../../store"
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { clearProfile, editProfile, fetchProfile } from "../../store/profileSlice";
+import { useParams } from "react-router-dom";
 
 
 const Profile: React.FC = () => {
+    const { username } = useParams<{ username: string }>();
     const dispatch = useDispatch<AppDispatch>();
     const { user, news, status } = useSelector((state: RootState) => state.profile);
     
@@ -15,21 +17,11 @@ const Profile: React.FC = () => {
         avatar: null as File | null
     });
 
-    
-
     useEffect(() => {
-        const token = Cookies.get("token");
-        const username = "user_name";
-        if (token) {
-            dispatch(fetchProfile({ username, token }));
+        if (username) {
+            dispatch(fetchProfile({ username }));
         }
-
-        return () => {
-            dispatch(clearProfile());
-        };
-    }, [dispatch]);
-
-    
+    }, [dispatch, username]);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -72,7 +64,7 @@ const Profile: React.FC = () => {
                             <div className="rounded-top text-white d-flex flex-row" style={{ backgroundColor: "#000", height: "200px" }}>
                                 <div className="ms-4 mt-5 d-flex flex-column" style={{ width: "150px"}}>
                                 <img
-                                    src={formData.avatar ? URL.createObjectURL(formData.avatar) : user.avatar.path}
+                                    src={formData.avatar ? URL.createObjectURL(formData.avatar) : user?.avatar?.path || "/default-avatar.png"}
                                     alt="Generic placeholder image"
                                     className="img-fluid img-thumbnail mt-4 mb-2"
                                     style={{ width: "150px", zIndex: "1" }}
@@ -155,3 +147,5 @@ const Profile: React.FC = () => {
     </section>
     )
 }
+
+export default Profile;

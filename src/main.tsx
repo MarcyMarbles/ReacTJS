@@ -13,6 +13,7 @@ import Layout from './Layout';
 import ConfirmPage from './components/auth/ConfirmPage';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import Profile from './components/profile/Profile';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -30,6 +31,7 @@ root.render(
           <Route path="/admin" element={<AdminPage />}/>
           <Route path='/confirm' element={<ConfirmPage/>}/>
           <Route path='/successful' element={<RegisterSuccess/>}/>
+          <Route path='/profile/:username' element={<Profile/>}/>
         </Route>
       </Routes>
     </Router>

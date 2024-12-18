@@ -43,17 +43,17 @@ const initialState: ProfileState = {
 
 export const fetchProfile = createAsyncThunk(
     "profile/fetchProfile",
-    async ({ username, token }: { username: string; token: string }, { rejectWithValue }) => {
+    async ({ username }: { username: string }, { rejectWithValue }) => {
+        const token = Cookies.get("token");
+        console.log("Token:", token);
         try {
-            const response = await axios.post(
-                `http://localhost:8080/user/profile/${username}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+            const response = await axios.post(`http://localhost:8080/api/user/profile/${username}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
                 }
-            );
+            })
             return response.data;
         } catch (err: any) {
             return rejectWithValue(err.response?.data || "Failed to fetch profile");
