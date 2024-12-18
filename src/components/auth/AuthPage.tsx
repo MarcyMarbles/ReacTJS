@@ -7,6 +7,7 @@ import {useNavigate} from 'react-router-dom';
 interface LoginResponse {
     token: string;
     role: string;
+    id: string;
     username: string;
 }
 
@@ -54,9 +55,12 @@ const AuthPage: React.FC = () => {
                 throw new Error("Invalid credentials");
             }
 
-            const {token, role, username}: LoginResponse = await response.json();
+            const {token, role, id, username}: LoginResponse = await response.json();
 
             Cookies.set("token", token, {expires: 30});
+            Cookies.set("role", role, {expires: 30});
+            Cookies.set("id", id, {expires: 30});
+            Cookies.set("username", username, {expires: 30});
 
             if (role.includes("ROLE_ADMIN")) {
                 navigate("/admin");
