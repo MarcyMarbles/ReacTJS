@@ -31,7 +31,7 @@ export const fetchAllNews = createAsyncThunk<News[], void, { rejectValue: string
     "news/fetchAll",
     async (_, { rejectWithValue }) => {
       try {
-        const response = await axios.get("http://localhost:8080/api/news");
+        const response = await axios.get("http://192.168.0.17:8080/api/news");
         return response.data;
       } catch (error: any) {
         return rejectWithValue(error.message);
@@ -39,15 +39,20 @@ export const fetchAllNews = createAsyncThunk<News[], void, { rejectValue: string
     }
   );
 
+ 
+
   export const createNews = createAsyncThunk<
     News,
-    { content: string; attachments: string[] },
+    { content: string; attachments: string[], },
     { rejectValue: string }
         >("news/create", async ({ content, attachments }, { rejectWithValue }) => {
     try {
-        const response = await axios.post("http://localhost:8080/api/news/post", {
-        content,
-        attachments,
+        const news = {
+          content: content,
+        } ;
+        const response = await axios.post("http://192.168.0.17:8080/api/news/post", {
+        news,
+        ids: attachments
         });
         return response.data;
     } catch (error: any) {

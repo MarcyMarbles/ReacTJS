@@ -9,7 +9,6 @@ const Feed = () => {
     const dispatch = useDispatch<AppDispatch>();
     const {news, loading, error} = useSelector((state: RootState) => state.news);
 
-    // Local state for creating a new post
     const [newContent, setNewContent] = useState("");
     const [newFiles, setNewFiles] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,8 +94,15 @@ const Feed = () => {
                 content: newContent,
                 attachments: fileDescriptors.map(fd => fd.id || fd.url)
             };
-            console.log("Post payload:", postPayload);
+            const newsPostDTO = {
+                newsDTO: {
+                    content: postPayload.content,
+                },
+                ids: postPayload.attachments,
+            };
+            console.log("Post payload:", newsPostDTO);
 
+            console.log("Final request body:", JSON.stringify(newsPostDTO));
             const response = await fetch(apiPost, {
                 method: "POST",
                 headers: {
@@ -104,16 +110,14 @@ const Feed = () => {
                     Authorization: `Bearer ${Cookies.get("token")}`,
                     "userId": Cookies.get("id") || "0",
                 },
-                body: JSON.stringify(postPayload),
+                body: JSON.stringify(newsPostDTO),
             });
 
             if (!response.ok) {
                 console.error("Failed to create a new post");
             } else {
-                // Reset fields after successful creation
                 setNewContent("");
                 setNewFiles([]);
-                // Refetch the news to update the feed
                 dispatch(fetchAllNews());
             }
         } catch (error) {
@@ -130,12 +134,12 @@ const Feed = () => {
         <div>
             {/* Post creation form */}
             <form onSubmit={handleSubmit} style={{marginBottom: "20px"}}>
-        <textarea
-            placeholder="What's happening?"
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            style={{width: "100%", height: "60px", marginBottom: "10px"}}
-        ></textarea>
+            <textarea
+                placeholder="What's happening?"
+                value={newContent}
+                onChange={(e) => setNewContent(e.target.value)}
+                style={{width: "100%", height: "60px", marginBottom: "10px"}}
+            ></textarea>
                 <input
                     type="file"
                     multiple
@@ -151,7 +155,7 @@ const Feed = () => {
             {Array.isArray(news) ? (
                 news.map((post) => (
                     <div key={post.id} className="post" style={{marginBottom: "20px"}}>
-                        <h3>{post.author.username}</h3>
+                        <h3>{post.author.username} </h3>
                         <p>{post.content}</p>
                         {post.attachments.map((attachment: string) => (
                             <img

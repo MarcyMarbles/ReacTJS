@@ -43,7 +43,7 @@ const CreatePost = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} >
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}

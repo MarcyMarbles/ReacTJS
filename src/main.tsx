@@ -35,7 +35,6 @@ root.render(
           <Route path='/successful' element={<RegisterSuccess/>}/>
           <Route path='/profile/:username' element={<Profile/>}/>
           <Route path='/feed' element={<Feed/>}/>
-          <Route path='/createPost' element={<CreatePost/>}/>
         </Route>
       </Routes>
     </Router>
