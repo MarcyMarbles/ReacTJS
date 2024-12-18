@@ -131,38 +131,48 @@ const Feed = () => {
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div>
+        <div className="feed_container">
             {/* Post creation form */}
-            <form onSubmit={handleSubmit} style={{marginBottom: "20px"}}>
-            <textarea
-                placeholder="What's happening?"
-                value={newContent}
-                onChange={(e) => setNewContent(e.target.value)}
-                style={{width: "100%", height: "60px", marginBottom: "10px"}}
-            ></textarea>
-                <input
-                    type="file"
-                    multiple
-                    onChange={handleFileChange}
-                    style={{display: "block", marginBottom: "10px"}}
-                />
-                <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Posting..." : "Post"}
-                </button>
+            <form onSubmit={handleSubmit} style={{marginBottom: "20px"}} className="feed_post_create">
+                <textarea
+                    placeholder="What's happening?"
+                    value={newContent}
+                    onChange={(e) => setNewContent(e.target.value)}
+                    style={{width: "100%", height: "60px", marginBottom: "10px", borderRadius: '5px', padding: '5px'}}
+                ></textarea>
+                    <input
+                        type="file"
+                        multiple
+                        onChange={handleFileChange}
+                        style={{display: "block", marginBottom: "10px"}}
+                        className="input_upload"
+                    />
+                    <button type="submit" disabled={isSubmitting} className="btn btn-success">
+                        {isSubmitting ? "Posting..." : "Post"}
+                    </button>
             </form>
 
             {/* Display of posts */}
             {Array.isArray(news) ? (
                 news.map((post) => (
                     <div key={post.id} className="post" style={{marginBottom: "20px"}}>
-                        <h3>{post.author.username} </h3>
-                        <p>{post.content}</p>
+                        <div className="post_header">
+                            <img
+                                src="https://via.placeholder.com/50"
+                                alt="Avatar"
+                            />
+                            <div>
+                                <h3>{post.author.username}</h3>
+                                <p>{post.content}</p>
+                            </div>
+                        </div>
+                        
                         {post.attachments.map((attachment: string) => (
                             <img
                                 src={attachment}
                                 alt="attachment"
                                 key={attachment}
-                                style={{maxWidth: "200px", display: "block"}}
+                                style={{maxWidth: "200px", display: "block", marginTop: '15px'}}
                             />
                         ))}
                     </div>

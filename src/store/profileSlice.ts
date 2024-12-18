@@ -47,7 +47,7 @@ export const fetchProfile = createAsyncThunk(
         const token = Cookies.get("token");
         console.log("Token:", token);
         try {
-            const response = await axios.post(`http://192.168.0.17:8080/api/user/profile/${username}`,
+            const response = await axios.post(`http://172.20.10.3:8080/api/user/profile/${username}`,
             {},
             {
                 headers: {
@@ -69,7 +69,7 @@ export const editProfile = createAsyncThunk(
             const token = Cookies.get("token");
 
             const response = await axios.post(
-                `http://192.168.0.17:8080/api/user/profile/${username}`,
+                `http://172.20.10.3:8080/api/user/profile/${username}`,
                 upDatedData,
                 {
                     headers: {

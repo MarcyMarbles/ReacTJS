@@ -165,7 +165,7 @@ const AuthPage: React.FC = () => {
 
                         <div data-mdb-input-init className="form-outline mb-4">
                             <label className="form-label" htmlFor="login">Login</label>
-                            <input type="text" id="loginReg" name="loginReg" className="form-control" required
+                            <input type="text" id="login" name="login" className="form-control" required
                                    value={formData.login} onChange={handleChange}/>
                         </div>
 
@@ -181,8 +181,8 @@ const AuthPage: React.FC = () => {
                         </div>
 
                         <div data-mdb-input-init className="form-outline mb-4">
-                            <label className="form-label" htmlFor="registerPassword">Password</label>
-                            <input type="password" id="passwordReg" name='passwordReg' className="form-control" required
+                            <label className="form-label" htmlFor="password">Password</label>
+                            <input type="password" id="password" name="password" className="form-control" required
                                    value={formData.password} onChange={handleChange}/>
                         </div>
 

@@ -1,20 +1,62 @@
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "../../store"
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { clearProfile, editProfile, fetchProfile } from "../../store/profileSlice";
 import { useParams } from "react-router-dom";
+import { apiFiles } from "../../api/api";
 
 const Profile: React.FC = () => {
     const { username } = useParams<{ username: string }>();
     const dispatch = useDispatch<AppDispatch>();
     const { user, status } = useSelector((state: RootState) => state.profile);
+    const [newFiles, setNewFiles] = useState<File[]>([]);
 
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
         username: user?.username || "",
         avatar: null as File | null,
     });
+
+     const uploadFiles = async (files: File[]): Promise<any[]> => {
+            const uploadedFiles: any[] = [];
+    
+            for (const file of files) {
+                const extension = file.name.split('.').pop() || '';
+
+                const type = file.type || 'application/octet-stream';
+                const metadata = {
+                    name: file.name,
+                    type: type,
+                    extension: extension,
+                    userId: Cookies.get("id"),
+                };
+    
+    
+                const fileFormData = new FormData();
+                fileFormData.append("metadata", new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+                fileFormData.append("file", file);
+                fileFormData.append("isAvatar", "false");
+    
+                const response = await fetch(`${apiFiles}?isAvatar=true`, {
+                    method: "POST",
+                    body: fileFormData,
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get("token")}`
+                    }
+                });
+    
+                if (!response.ok) {
+                    console.error("Failed to upload file:", file.name);
+                    throw new Error(`File upload failed for ${file.name}`);
+                }
+    
+                const fileDescriptor = await response.json();
+                uploadedFiles.push(fileDescriptor);
+            }
+    
+            return uploadedFiles;
+        };
 
     useEffect(() => {
         if (username) {
@@ -47,33 +89,35 @@ const Profile: React.FC = () => {
         const updatedFormData = new FormData();
     
         updatedFormData.append("username", formData.username || "");
-        if (formData.avatar) {
+        if (formData.avatar && typeof formData.avatar === "string") {
             updatedFormData.append("avatar", formData.avatar);
         }
-    
-        console.log(
-            "Отправляем данные:",
-            updatedFormData.get("username"),
-            updatedFormData.get("avatar")
-        );
     
         dispatch(
             editProfile({
                 username: user.username,
-                upDatedData: updatedFormData
+                upDatedData: updatedFormData,
             })
         );
     
         setIsEditing(false);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setFormData((prev) => ({
-                ...prev,
-                avatar: file,
-            }));
+    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const files = Array.from(e.target.files);
+            try {
+                const uploadedFiles = await uploadFiles(files);
+                if (uploadedFiles.length > 0) {
+                    const avatarPath = uploadedFiles[0].path;
+                    setFormData((prev) => ({
+                        ...prev,
+                        avatar: avatarPath,
+                    }));
+                }
+            } catch (error) {
+                console.error("Ошибка загрузки файлов:", error);
+            }
         }
     };
 
@@ -100,9 +144,11 @@ const Profile: React.FC = () => {
                                 {isEditing && (
                                     <input
                                         type="file"
+                                        multiple
                                         accept="image/*"
                                         onChange={handleFileChange}
-                                        className="mt-2"
+                                        style={{display: "block", marginBottom: "10px"}}
+                                        className="input_upload"
                                     />
                                 )}
                                     <button  type="button" 

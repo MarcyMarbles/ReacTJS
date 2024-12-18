@@ -26,7 +26,7 @@ const CreatePost = () => {
           formData.append("file", file);
       
           const response = await axios.post<{ path: string }>(
-            "http://localhost:8080/api/files/upload",
+            "http://172.20.10.3:8080/api/files/upload",
             formData,
             {
               headers: { "Content-Type": "multipart/form-data" },

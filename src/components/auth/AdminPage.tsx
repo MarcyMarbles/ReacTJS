@@ -38,7 +38,7 @@ const AdminPage = () => {
         fetchData();
 
         const token = Cookies.get("token");
-        const ws = new WebSocket(`ws://localhost:8080/ws/users?token=${token}`);
+        const ws = new WebSocket(`ws://172.20.10.3:8080/ws/users?token=${token}`);
 
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -87,7 +87,7 @@ const AdminPage = () => {
                 roles: null,
             };
 
-            const response = await axios.post("http://localhost:8080/api/addUser", newUser);
+            const response = await axios.post("http://172.20.10.3:8080/api/addUser", newUser);
             if (response.status === 200) {
                 console.log("User added successfully:", response.data);
                 setRows((prevRows) => [...prevRows, response.data]);
@@ -101,7 +101,7 @@ const AdminPage = () => {
 
     const handleDeleteUser = async (id: number) => {
         try {
-            const response = await axios.delete(`http://localhost:8080/api/deleteUser/${id}`);
+            const response = await axios.delete(`http://172.20.10.3:8080/api/deleteUser/${id}`);
             if (response.status === 200) {
                 setRows((prevRows) => prevRows.filter((row) => row.id !== id));
             } else {
