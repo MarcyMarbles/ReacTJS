@@ -163,10 +163,10 @@ const Feed = () => {
                             />
                             <div>
                                 <h3>{post.author.username}</h3>
-                                <p>{post.content}</p>
                             </div>
                         </div>
-                        
+                        <p>{post.content}</p>
+
                         {post.attachments.map((attachment: string) => (
                             <img
                                 src={attachment}
