@@ -69,7 +69,7 @@ export const editProfile = createAsyncThunk(
             const token = Cookies.get("token");
 
             const response = await axios.post(
-                `http://localhost:8080//user/profile/${username}`,
+                `http://localhost:8080/api/user/profile/${username}`,
                 upDatedData,
                 {
                     headers: {
@@ -92,9 +92,14 @@ const profileSlice = createSlice({
     reducers: {
         clearProfile: (state) => {
             state.user = null;
-            state.news = [];
             state.isFollowing = false;
             state.isSelf = false;
+        },
+        logout: (state) => {
+            state.user = null;
+            state.isFollowing = false;
+            state.isSelf = false;
+            Cookies.remove('token');
         },
     },
     extraReducers: (builder) => {
@@ -126,5 +131,5 @@ const profileSlice = createSlice({
     },
 });
 
-export const { clearProfile } = profileSlice.actions;
+export const { clearProfile, logout } = profileSlice.actions;
 export default profileSlice.reducer;
