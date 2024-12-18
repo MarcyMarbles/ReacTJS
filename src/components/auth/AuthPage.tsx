@@ -3,6 +3,7 @@ import './styles/LoginPage.css';
 import Cookies from 'js-cookie';
 import {apiLogin, apiRegister} from '../../api/api';
 import {useNavigate} from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 interface LoginResponse {
     token: string;
@@ -36,6 +37,8 @@ const AuthPage: React.FC = () => {
         setFormData({...formData, [id]: value});
     }
 
+    const username = formData.username;
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
@@ -57,11 +60,10 @@ const AuthPage: React.FC = () => {
 
             Cookies.set("token", token, {expires: 30});
 
-            navigate("/profile")
             if (role.includes("ROLE_ADMIN")) {
                 navigate("/admin");
             } else {
-                throw new Error("You do not have admin access.");
+                navigate(`/profile/${username}`);
             }
         } catch (err: any) {
             setError(err.message || "Login failed");
@@ -161,7 +163,7 @@ const AuthPage: React.FC = () => {
 
                         <div data-mdb-input-init className="form-outline mb-4">
                             <label className="form-label" htmlFor="login">Login</label>
-                            <input type="text" id="login" name="login" className="form-control" required
+                            <input type="text" id="loginReg" name="loginReg" className="form-control" required
                                    value={formData.login} onChange={handleChange}/>
                         </div>
 
@@ -178,7 +180,7 @@ const AuthPage: React.FC = () => {
 
                         <div data-mdb-input-init className="form-outline mb-4">
                             <label className="form-label" htmlFor="registerPassword">Password</label>
-                            <input type="password" id="password" name='password' className="form-control" required
+                            <input type="password" id="passwordReg" name='passwordReg' className="form-control" required
                                    value={formData.password} onChange={handleChange}/>
                         </div>
 
@@ -208,3 +210,4 @@ const AuthPage: React.FC = () => {
 };
 
 export default AuthPage;
+

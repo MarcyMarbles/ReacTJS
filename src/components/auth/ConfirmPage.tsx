@@ -20,7 +20,7 @@ const ConfirmPage = () => {
                 const response = await fetch(apiConfirm, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ code }),
+                    body: ( code ),
                 });
 
                 if (!response.ok) {
@@ -30,7 +30,7 @@ const ConfirmPage = () => {
                 setStatus("success");
 
                 
-                setTimeout(() => navigate("/login"), 2000);
+                setTimeout(() => navigate("/"), 2000);
             } catch (error) {
                 console.error(error);
                 setStatus("error");
