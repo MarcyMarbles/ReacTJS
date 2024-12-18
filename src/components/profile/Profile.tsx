@@ -5,16 +5,15 @@ import Cookies from "js-cookie";
 import { clearProfile, editProfile, fetchProfile } from "../../store/profileSlice";
 import { useParams } from "react-router-dom";
 
-
 const Profile: React.FC = () => {
     const { username } = useParams<{ username: string }>();
     const dispatch = useDispatch<AppDispatch>();
-    const { user, news, status } = useSelector((state: RootState) => state.profile);
-    
+    const { user, status } = useSelector((state: RootState) => state.profile);
+
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
         username: user?.username || "",
-        avatar: null as File | null
+        avatar: null as File | null,
     });
 
     useEffect(() => {
@@ -23,32 +22,58 @@ const Profile: React.FC = () => {
         }
     }, [dispatch, username]);
 
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                username: user.username || "",
+                avatar: null,
+            });
+        }
+    }, [user]);
+
     const handleEditClick = () => {
         setIsEditing(true);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
     const handleSave = () => {
+        const updatedFormData = new FormData();
+    
+        updatedFormData.append("username", formData.username || "");
+        if (formData.avatar) {
+            updatedFormData.append("avatar", formData.avatar);
+        }
+    
+        console.log(
+            "Отправляем данные:",
+            updatedFormData.get("username"),
+            updatedFormData.get("avatar")
+        );
+    
         dispatch(
             editProfile({
                 username: user.username,
-                upDatedData: { username: formData.username, avatar: formData.avatar },
+                upDatedData: updatedFormData
             })
         );
+    
         setIsEditing(false);
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData({
-                ...formData,
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setFormData((prev) => ({
+                ...prev,
                 avatar: file,
-            });
+            }));
         }
     };
 
@@ -61,25 +86,28 @@ const Profile: React.FC = () => {
                 <div className="row d-flex justify-content-center">
                     <div className="col col-lg-9 col-xl-8">
                         <div className="card">
-                            <div className="rounded-top text-white d-flex flex-row" style={{ backgroundColor: "#000", height: "200px" }}>
+                            <div className="rounded-top text-white d-flex flex-row" style={{ backgroundColor: "#000", height: "300px" }}>
                                 <div className="ms-4 mt-5 d-flex flex-column" style={{ width: "150px"}}>
                                 <img
-                                    src={formData.avatar ? URL.createObjectURL(formData.avatar) : user?.avatar?.path || "/default-avatar.png"}
+                                    src={
+                                        formData.avatar
+                                            ? URL.createObjectURL(formData.avatar)
+                                            : user?.avatar?.path || "/assets/default-avatar.png"
+                                    }
                                     alt="Generic placeholder image"
-                                    className="img-fluid img-thumbnail mt-4 mb-2"
-                                    style={{ width: "150px", zIndex: "1" }}
+                                    className="rounded-circle img-fluid" style={{ width: '150px', height: '150px', objectFit: 'cover', zIndex: "1"  }}
                                 />
                                 {isEditing && (
                                     <input
                                         type="file"
                                         accept="image/*"
-                                        onChange={handleImageChange}
+                                        onChange={handleFileChange}
                                         className="mt-2"
                                     />
                                 )}
                                     <button  type="button" 
                                         data-mdb-button-init data-mdb-ripple-init 
-                                        className="btn btn-outline-light text-light" 
+                                        className="btn btn-outline-light text-light me-2 mt-4" 
                                         data-mdb-ripple-color="dark" style={{ zIndex: "1"}}
                                         onClick={handleEditClick}>
                                         Edit profile
@@ -92,7 +120,7 @@ const Profile: React.FC = () => {
                                             type="text"
                                             name="username"
                                             value={formData.username}
-                                            onChange={handleChange}
+                                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                             placeholder="Username"
                                             className="form-control mb-2"
                                         />
