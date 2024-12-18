@@ -3,11 +3,11 @@ import './styles/LoginPage.css';
 import Cookies from 'js-cookie';
 import {apiLogin, apiRegister} from '../../api/api';
 import {useNavigate} from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 
 interface LoginResponse {
     token: string;
     role: string;
+    username: string;
 }
 
 interface FormData {
@@ -37,8 +37,6 @@ const AuthPage: React.FC = () => {
         setFormData({...formData, [id]: value});
     }
 
-    const username = formData.username;
-
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
@@ -56,7 +54,7 @@ const AuthPage: React.FC = () => {
                 throw new Error("Invalid credentials");
             }
 
-            const {token, role}: LoginResponse = await response.json();
+            const {token, role, username}: LoginResponse = await response.json();
 
             Cookies.set("token", token, {expires: 30});
 
