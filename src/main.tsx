@@ -16,6 +16,7 @@ import { store } from './store';
 import Profile from './components/profile/Profile';
 import Feed from './components/news/Feed';
 import CreatePost from './components/news/CreatePost';
+import Friends from "./components/profile/Friends";
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -35,6 +36,7 @@ root.render(
           <Route path='/successful' element={<RegisterSuccess/>}/>
           <Route path='/profile/:username' element={<Profile/>}/>
           <Route path='/feed' element={<Feed/>}/>
+          <Route path='/friends' element={<Friends/>}/>
         </Route>
       </Routes>
     </Router>

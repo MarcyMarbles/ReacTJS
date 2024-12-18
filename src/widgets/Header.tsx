@@ -43,6 +43,9 @@ return (
                     <Link className="text-white nav-link px-2" to="/feed">
                         Posts
                     </Link>
+                    <Link className="text-white nav-link px-2" to="/friends">
+                        Friends
+                    </Link>
                 </nav>
                 <div className="d-flex justify-content-center align-items-center text-end col col-lg-auto mb-2 mb-md-0" style={{ minHeight: '50px' }}>
                     {!user ? (
