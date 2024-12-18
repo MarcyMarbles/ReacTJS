@@ -48,6 +48,7 @@ export const fetchProfile = createAsyncThunk(
         console.log("Token:", token);
         try {
             const response = await axios.post(`http://localhost:8080/api/user/profile/${username}`,
+            {},
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -67,7 +68,7 @@ export const editProfile = createAsyncThunk(
         try {
             const token = Cookies.get("token");
 
-            const response = await axios.put(
+            const response = await axios.post(
                 `http://localhost:8080//user/profile/${username}`,
                 upDatedData,
                 {

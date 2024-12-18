@@ -79,7 +79,7 @@ const Profile: React.FC = () => {
                                 )}
                                     <button  type="button" 
                                         data-mdb-button-init data-mdb-ripple-init 
-                                        className="btn btn-outline-dark text-body" 
+                                        className="btn btn-outline-light text-light" 
                                         data-mdb-ripple-color="dark" style={{ zIndex: "1"}}
                                         onClick={handleEditClick}>
                                         Edit profile
