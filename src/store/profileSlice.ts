@@ -22,7 +22,7 @@ export interface ProfileState {
         username: string;
         email: string;
         roles: { id: string; name: string };
-        avatar: { id: string; path: string };
+        avatar: { id: string; path: string; name: string };
         friends: string[];
         isGroup: boolean;
         isPending: boolean;

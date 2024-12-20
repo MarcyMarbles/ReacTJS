@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -8,7 +8,7 @@ interface User {
     username: string;
     email: string;
     roles: { id: string; name: string };
-    avatar: { id: string; path: string };
+    avatar: { id: string; path: string; name: string };
     friends: string[];
     isGroup: boolean;
     isPending: boolean;
@@ -23,7 +23,7 @@ const SearchUsers: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [users, setUsers] = useState<FriendsDTO[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
 
     const handleSearch = async () => {
         if (!searchTerm) return;
@@ -36,7 +36,7 @@ const SearchUsers: React.FC = () => {
             const response = await axios.get(
                 `http://localhost:8080/api/friends/find`,
                 {
-                    params: { username: searchTerm },
+                    params: {username: searchTerm},
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const SearchUsers: React.FC = () => {
             const token = Cookies.get("token");
             await axios.post(
                 `http://localhost:8080/api/friends/add`,
-                { userId },
+                {userId},
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -77,17 +77,18 @@ const SearchUsers: React.FC = () => {
             setUsers((prevUsers) =>
                 prevUsers.map((friendDTO) =>
                     friendDTO.user.id === userId
-                        ? { ...friendDTO, isFriend: true }
+                        ? {...friendDTO, isFriend: true}
                         : friendDTO
                 )
             );
+
         } catch (err: any) {
             setError(err.response?.data || "Failed to add friend");
         }
     };
 
     return (
-        <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
+        <div style={{padding: "20px", maxWidth: "600px", margin: "0 auto"}}>
             <h1>Search Users</h1>
 
             <input
@@ -96,14 +97,14 @@ const SearchUsers: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={handleKeyPress}
-                style={{ padding: "10px", width: "100%", marginBottom: "10px" }}
+                style={{padding: "10px", width: "100%", marginBottom: "10px"}}
             />
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <p style={{color: "red"}}>{error}</p>}
 
             {users.length > 0 && (
-                <ul style={{ listStyle: "none", padding: 0, marginTop: "20px" }}>
-                    {users.map(({ user, isFriend }) => (
+                <ul style={{listStyle: "none", padding: 0, marginTop: "20px"}}>
+                    {users.map(({user, isFriend}) => (
                         <li
                             key={user.id}
                             style={{
@@ -114,9 +115,9 @@ const SearchUsers: React.FC = () => {
                                 justifyContent: "space-between",
                             }}
                         >
-                            <div style={{ display: "flex", alignItems: "center" }}>
+                            <div style={{display: "flex", alignItems: "center"}}>
                                 <img
-                                    src={user.avatar?.path || "https://via.placeholder.com/50"}
+                                    src={`http://localhost:8080/api/files/users/${user.id}/${user.avatar.name}` || "https://via.placeholder.com/50"}
                                     alt="Avatar"
                                     style={{
                                         width: "50px",
@@ -136,7 +137,7 @@ const SearchUsers: React.FC = () => {
                                     >
                                         {user.username}
                                     </a>
-                                    <p style={{ margin: 0, color: "gray" }}>{user.email}</p>
+                                    <p style={{margin: 0, color: "gray"}}>{user.email}</p>
                                 </div>
                             </div>
                             {!isFriend && (

@@ -5,6 +5,12 @@ import {addNewsFromSocket, fetchAllNews} from "../../store/newsSlice";
 import Cookies from "js-cookie";
 import {apiFiles, apiPost} from "../../api/api";
 
+interface Attachment {
+    id: string;
+    userId: string;
+    name: string;
+}
+
 const Feed = () => {
     const dispatch = useDispatch<AppDispatch>();
     const {news, loading, error} = useSelector((state: RootState) => state.news);
@@ -130,6 +136,8 @@ const Feed = () => {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
+    const sortedNews = [...news].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
     return (
         <div className="feed_container">
             {/* Post creation form */}
@@ -140,25 +148,25 @@ const Feed = () => {
                     onChange={(e) => setNewContent(e.target.value)}
                     style={{width: "100%", height: "60px", marginBottom: "10px", borderRadius: '5px', padding: '5px'}}
                 ></textarea>
-                    <input
-                        type="file"
-                        multiple
-                        onChange={handleFileChange}
-                        style={{display: "block", marginBottom: "10px"}}
-                        className="input_upload"
-                    />
-                    <button type="submit" disabled={isSubmitting} className="btn btn-success">
-                        {isSubmitting ? "Posting..." : "Post"}
-                    </button>
+                <input
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    style={{display: "block", marginBottom: "10px"}}
+                    className="input_upload"
+                />
+                <button type="submit" disabled={isSubmitting} className="btn btn-success">
+                    {isSubmitting ? "Posting..." : "Post"}
+                </button>
             </form>
 
             {/* Display of posts */}
-            {Array.isArray(news) ? (
-                news.map((post) => (
+            {Array.isArray(sortedNews) ? (
+                sortedNews.map((post) => (
                     <div key={post.id} className="post" style={{marginBottom: "20px"}}>
                         <div className="post_header">
                             <img
-                                src="https://via.placeholder.com/50"
+                                src={`http://localhost:8080/api/files/users/${post.author.id}/${post.author.avatar.name}`}
                                 alt="Avatar"
                             />
                             <div>
@@ -167,11 +175,11 @@ const Feed = () => {
                         </div>
                         <p>{post.content}</p>
 
-                        {post.attachments.map((attachment: string) => (
+                        {post.attachments.map((attachment: Attachment) => (
                             <img
-                                src={attachment}
+                                src={`http://localhost:8080/api/files/users/${attachment.userId}/${attachment.name}`}
                                 alt="attachment"
-                                key={attachment}
+                                key={attachment.name}
                                 style={{maxWidth: "200px", display: "block", marginTop: '15px'}}
                             />
                         ))}
