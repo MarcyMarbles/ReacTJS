@@ -117,7 +117,7 @@ const SearchUsers: React.FC = () => {
                         >
                             <div style={{display: "flex", alignItems: "center"}}>
                                 <img
-                                    src={`http://localhost:8080/api/files/users/${user.id}/${user.avatar.name}` || "https://via.placeholder.com/50"}
+                                    src={user.avatar ? `http://localhost:8080/api/files/users/${user.id}/${user.avatar.name}` : "https://via.placeholder.com/50"}
                                     alt="Avatar"
                                     style={{
                                         width: "50px",
