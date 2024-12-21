@@ -17,6 +17,9 @@ interface News {
     dislikes: string[];
     comments: string[];
     createdAt: Date;
+    likesCount: number;
+    dislikesCount: number;
+    commentsCount: number;
 }
 
 interface Attachments {
