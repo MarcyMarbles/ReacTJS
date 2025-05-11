@@ -2,42 +2,27 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-export interface NewsItem {
-    content: string;
-    attachments: string[];
-    author: {
-        id: string;
-        username: string;
-        email: string;
-    };
-    likes: string[];
-    dislikes: string[];
-    comments: string[];
+export interface Balance {
+  id: string;
+  ownerId: string;
+  balance: number;
+  currency: string;
+}
+
+export interface User {
+  username: string;
+  email: string;
 }
 
 export interface ProfileState {
-    user: {
-        id: string;
-        login: string;
-        username: string;
-        email: string;
-        roles: { id: string; name: string };
-        avatar: { id: string; path: string; name: string };
-        friends: string[];
-        isGroup: boolean;
-        isPending: boolean;
-    } | null;
-    news: NewsItem[];
-    isFollowing: boolean;
-    isSelf: boolean;
-    status: "idle" | "loading" | "failed";
+  user: User | null;
+  balance: Balance | null;
+  status: "idle" | "loading" | "failed";
 }
 
 const initialState: ProfileState = {
     user: null,
-    news: [],
-    isFollowing: false,
-    isSelf: false,
+    balance: null,
     status: "idle",
 };
 
@@ -55,9 +40,22 @@ export const fetchProfile = createAsyncThunk(
                     "Content-Type": "application/json",
                 }
             })
-            return response.data;
+
+            const balanceRes = await axios.get(
+                `http://localhost:8080/api/balance`,
+                {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                }
+            );
+
+            return {
+                user: response.data,
+                balance: balanceRes.data,
+            };
         } catch (err: any) {
-            return rejectWithValue(err.response?.data || "Failed to fetch profile");
+            return rejectWithValue(err.response?.data || "Failed to fetch profile or balance");
         }
     }
 );
@@ -86,49 +84,84 @@ export const editProfile = createAsyncThunk(
     }
 );
 
+export const topUpBalance = createAsyncThunk(
+  "profile/topUpBalance",
+  async (amount: number, { rejectWithValue }) => {
+    const token = Cookies.get("token");
+    try {
+      const response = await axios.patch(
+        `http://localhost:8080/api/balance/add?amount=${amount}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || "Failed to top up");
+    }
+  }
+);
+
+export const withdrawBalance = createAsyncThunk(
+  "profile/withdrawBalance",
+  async (amount: number, { rejectWithValue }) => {
+    const token = Cookies.get("token");
+    try {
+      const response = await axios.patch(
+        `http://localhost:8080/api/balance/subtract?amount=${amount}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || "Failed to withdraw");
+    }
+  }
+);
+
+
 const profileSlice = createSlice({
-    name: "profile",
-    initialState,
-    reducers: {
-        clearProfile: (state) => {
-            state.user = null;
-            state.isFollowing = false;
-            state.isSelf = false;
-        },
-        logout: (state) => {
-            state.user = null;
-            state.isFollowing = false;
-            state.isSelf = false;
-            Cookies.remove('token');
-        },
+  name: "profile",
+  initialState,
+  reducers: {
+    clearProfile: (state) => {
+      state.user = null;
+      state.balance = null;
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(fetchProfile.pending, (state) => {
-                state.status = "loading";
-            })
-            .addCase(fetchProfile.fulfilled, (state, action: PayloadAction<ProfileState>) => {
-                state.user = action.payload.user;
-                state.news = action.payload.news;
-                state.isFollowing = action.payload.isFollowing;
-                state.isSelf = action.payload.isSelf;
-                state.status = "idle";
-            })
-            .addCase(fetchProfile.rejected, (state) => {
-                state.status = "failed";
-            })
-            
-            .addCase(editProfile.pending, (state) => {
-                state.status = "loading";
-            })
-            .addCase(editProfile.fulfilled, (state, action: PayloadAction<ProfileState["user"]>) => {
-                state.status = "idle";
-                state.user = { ...state.user, ...action.payload };
-            })
-            .addCase(editProfile.rejected, (state) => {
-                state.status = "failed";
-            });
+    logout: (state) => {
+      state.user = null;
+      state.balance = null;
+      Cookies.remove("token");
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProfile.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.balance = action.payload.balance;
+        state.status = "idle";
+      })
+      .addCase(fetchProfile.rejected, (state) => {
+        state.status = "failed";
+      })
+
+      .addCase(topUpBalance.fulfilled, (state, action) => {
+        state.balance = action.payload;
+      })
+      .addCase(withdrawBalance.fulfilled, (state, action) => {
+        state.balance = action.payload;
+      });
+  },
 });
 
 export const { clearProfile, logout } = profileSlice.actions;

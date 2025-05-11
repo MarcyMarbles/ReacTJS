@@ -4,7 +4,6 @@ import "@ezgrid/grid-core/icons.css"
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import AuthPage from './components/auth/AuthPage';
 import App from './App';
 import ReactDOM from 'react-dom/client';
 import AdminPage from './components/auth/AdminPage';
@@ -13,10 +12,8 @@ import Layout from './Layout';
 import ConfirmPage from './components/auth/ConfirmPage';
 import { Provider } from 'react-redux';
 import { store } from './store';
-import Profile from './components/profile/Profile';
-import Feed from './components/news/Feed';
-import CreatePost from './components/news/CreatePost';
-import Friends from "./components/profile/Friends";
+import LoginPage from './components/auth/LoginPage';
+import RegisterPage from './components/auth/RegisterPage';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -29,14 +26,12 @@ root.render(
     <Router>
       <Routes>
         <Route element={<Layout/>}>
-          <Route path="/" element={<AuthPage />} />
-          <Route path="/home" element={<App />} />
+          <Route path="/" element={<App />} />
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/register" element={<RegisterPage/>}/>
           <Route path="/admin" element={<AdminPage />}/>
           <Route path='/confirm' element={<ConfirmPage/>}/>
           <Route path='/successful' element={<RegisterSuccess/>}/>
-          <Route path='/profile/:username' element={<Profile/>}/>
-          <Route path='/feed' element={<Feed/>}/>
-          <Route path='/friends' element={<Friends/>}/>
         </Route>
       </Routes>
     </Router>
