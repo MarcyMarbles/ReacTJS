@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import profileReducer from "./profileSlice";
+import bankReducer from './bankSlice'
+import transactionReducer from './transactionsSlice'
 
 export const store = configureStore({
     reducer: {
         profile: profileReducer,
+        banks: bankReducer,
+        transactions: transactionReducer
     },
 });
 

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { deleteBalance, fetchProfile, getBalance, topUpBalance, withdrawBalance } from "./store/profileSlice";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { BankList } from "./components/bank/BankList";
+import { ChartsTrans } from "./components/charts/chartsTrans";
 
 
 const App: React.FC = () => {
@@ -90,11 +92,11 @@ const App: React.FC = () => {
                             Delete Balance
                             </button>
                         </div>
-                        
                     </div>
                 </div>
-                
             </div>
+            <BankList/>
+            <ChartsTrans/>
         </div>
     );
 };

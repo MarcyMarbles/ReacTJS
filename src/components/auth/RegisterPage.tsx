@@ -97,7 +97,7 @@ const RegisterPage: React.FC = () => {
         throw new Error(text || "Balance creation failed");
       }
 
-      navigate("/successful");
+      navigate("/");
     } catch (err: any) {
       setError(err.message || "Registration failed");
       console.log(error)
