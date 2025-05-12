@@ -45,7 +45,7 @@ const SalaryModal: React.FC<SalaryModalProps> = ({isOpen, onClose, onSubmit}) =>
     };
 
     return (
-        <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-black p-6 rounded-lg w-96">
                 <h2 className="text-2xl font-bold mb-4 text-white">Add Salary Details</h2>
                 <form onSubmit={handleSubmit}>
