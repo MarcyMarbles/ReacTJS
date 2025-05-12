@@ -1,15 +1,17 @@
 import {Link, useNavigate} from "react-router-dom";
 import {AppDispatch, RootState} from "../store";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import Cookies from "js-cookie";
 import {clearProfile, fetchProfile, logout} from "../store/profileSlice";
 import HeaderDropdown from "./HeaderDropdown";
+import SalaryModal from "../components/SalaryModal";
 
 function Header() {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
-    const { user } = useSelector((state: RootState) => state.profile);
+    const {user} = useSelector((state: RootState) => state.profile);
+    const [isSalaryModalOpen, setIsSalaryModalOpen] = useState(false);
 
     const usernameFromCookies = Cookies.get('username');
 
@@ -28,6 +30,19 @@ function Header() {
         dispatch(logout());
         navigate("/login");
     }
+
+    const handleSalarySubmit = (data: { salary: number; salaryType: string; currency: string }) => {
+        console.log('Salary data:', data);
+        const token = Cookies.get("token");
+        fetch("http://localhost:8080/api/salary-details", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify((data))
+        }).then(r => console.log(r));
+    };
 
     let avatarSrc = "/assets/default-avatar.png";
     if (user?.avatar?.name && user?.id) {
@@ -86,6 +101,12 @@ function Header() {
                     )}
                 </div>
             </div>
+
+            <SalaryModal
+                isOpen={isSalaryModalOpen}
+                onClose={() => setIsSalaryModalOpen(false)}
+                onSubmit={handleSalarySubmit}
+            />
         </header>
     );
 }
