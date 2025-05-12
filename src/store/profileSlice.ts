@@ -32,7 +32,7 @@ export const fetchProfile = createAsyncThunk(
         const token = Cookies.get("token");
         console.log("Token:", token);
         try {
-            const response = await axios.post(`http://localhost:8080/api/user/profile/${username}`,
+            const profileRes = await axios.post(`http://localhost:8080/api/user/profile/${username}`,
             {},
             {
                 headers: {
@@ -50,12 +50,17 @@ export const fetchProfile = createAsyncThunk(
                 }
             );
 
+            const user = profileRes.data.user;
+
             return {
-                user: response.data,
+                user: {
+                  username: user.username,
+                  email: user.email,
+                },
                 balance: balanceRes.data,
             };
         } catch (err: any) {
-            return rejectWithValue(err.response?.data || "Failed to fetch profile or balance");
+            return rejectWithValue(err.profileRes?.data || "Failed to fetch profile or balance");
         }
     }
 );
@@ -82,6 +87,23 @@ export const editProfile = createAsyncThunk(
             return rejectWithValue(err.response?.data || "Failed to edit profile");
         }
     }
+);
+
+export const deleteBalance = createAsyncThunk(
+  "profile/deleteBalance",
+  async (_, { rejectWithValue }) => {
+    const token = Cookies.get("token");
+    try {
+      await axios.delete(`http://localhost:8080/api/balance`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return null;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || "Failed to delete balance");
+    }
+  }
 );
 
 export const topUpBalance = createAsyncThunk(
@@ -126,6 +148,23 @@ export const withdrawBalance = createAsyncThunk(
   }
 );
 
+export const getBalance = createAsyncThunk(
+  "profile/getBalance",
+  async (_, { rejectWithValue }) => {
+    const token = Cookies.get("token");
+    try {
+      const response = await axios.get(`http://localhost:8080/api/balance`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || "Failed to fetch balance");
+    }
+  }
+);
+
 
 const profileSlice = createSlice({
   name: "profile",
@@ -154,7 +193,12 @@ const profileSlice = createSlice({
       .addCase(fetchProfile.rejected, (state) => {
         state.status = "failed";
       })
-
+      .addCase(getBalance.fulfilled, (state, action) => {
+        state.balance = action.payload;
+      })
+      .addCase(deleteBalance.fulfilled, (state) => {
+        state.balance = null;
+      })
       .addCase(topUpBalance.fulfilled, (state, action) => {
         state.balance = action.payload;
       })

@@ -4,11 +4,10 @@ import { Link } from "react-router-dom";
 
 interface HeaderDropdownProps {
     username: string;
-    user: React.ReactNode;
     children?: ReactNode;
 }
 
-export default function HeaderDropdown({username, children, user} : HeaderDropdownProps) {
+export default function HeaderDropdown({username, children} : HeaderDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -33,24 +32,24 @@ export default function HeaderDropdown({username, children, user} : HeaderDropdo
     }, [isOpen]);
 
     return(
-        <div className="dropdown text-end z-1">
+        <div className="dropdown text-end z-1 text-white">
             <button
-                className="btn rounded-5 p-0 text-light"
+                className="btn rounded-5 p-0 text-white"
                 type="button"
                 id="dropdownMenuButton"
                 onClick={toggleDropdown}
                 aria-expanded={isOpen ? "true" : "false"}
                 style={{ width: '50px', height: '50px', border: '0' }}
             >
-                {user}
+                Settings
             </button>
             <ul
                 className={`dropdown-menu dropdown-menu-dark ${isOpen ? "show" : ""}`}
                 aria-labelledby="dropdownMenuButton"
             >
                 <li>
-                    <Link className="dropdown-item" to={`/profile/${username}`}>
-                        My profile
+                    <Link className="dropdown-item" to={'/'}>
+                        Dashboard
                     </Link>
                 </li>
                 <li>

@@ -29,10 +29,6 @@ function Header() {
         navigate("/login");
     }
 
-    let avatarSrc = "/assets/default-avatar.png";
-    if (user?.avatar?.name && user?.id) {
-        avatarSrc = `http://localhost:8080/api/files/users/${user.id}/${user.avatar.name}`;
-    }
 
     return (
         <header className="p-2 text-bg-dark w-full">
@@ -47,14 +43,14 @@ function Header() {
                         Dashboard
                     </Link>
                     <Link className="text-white nav-link px-2 hover:text-gray-300" to="/feed">
-                        Posts
+                        Deposite
                     </Link>
                     <Link className="text-white nav-link px-2 hover:text-gray-300" to="/friends">
-                        Friends
+                        Loans
                     </Link>
                 </nav>
                 
-                <div className="flex items-center justify-end space-x-2"
+                <div className="flex items-center justify-end space-x-2 mr-24"
                     style={{minHeight: '50px'}}>
                     {!user ? (
                         <>
@@ -67,16 +63,6 @@ function Header() {
                         </>
                     ) : (
                         <HeaderDropdown
-                            user={
-                                <img
-                                    src={avatarSrc}
-                                    alt="Avatar"
-                                    width={50}
-                                    height={50}
-                                    className="rounded-circle"
-                                    style={{objectFit: 'cover'}}
-                                />
-                            }
                             username={user.username || ""}
                         >
                             <Link to="/" onClick={handleLogout} className="text-decoration-none text-reset">
