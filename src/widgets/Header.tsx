@@ -1,15 +1,19 @@
 import {Link, useNavigate} from "react-router-dom";
 import {AppDispatch, RootState} from "../store";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import Cookies from "js-cookie";
 import {clearProfile, fetchProfile, logout} from "../store/profileSlice";
 import HeaderDropdown from "./HeaderDropdown";
+import SalaryModal from "../components/SalaryModal";
+import LoanModal from "../components/LoanModal";
 
 function Header() {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
-    const { user } = useSelector((state: RootState) => state.profile);
+    const {user} = useSelector((state: RootState) => state.profile);
+    const [isSalaryModalOpen, setIsSalaryModalOpen] = useState(false);
+    const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
 
     const usernameFromCookies = Cookies.get('username');
 
@@ -17,7 +21,7 @@ function Header() {
         const token = Cookies.get('token');
 
         if (token && usernameFromCookies) {
-            dispatch(fetchProfile({ username: usernameFromCookies }));
+            dispatch(fetchProfile({username: usernameFromCookies}));
         }
         return () => {
             dispatch(clearProfile());
@@ -29,6 +33,37 @@ function Header() {
         navigate("/login");
     }
 
+    const handleSalarySubmit = (data: { salary: number; salaryType: string; currency: string }) => {
+        console.log('Salary data:', data);
+        const token = Cookies.get("token");
+        fetch("http://localhost:8080/api/salary-details", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify((data))
+        }).then(r => console.log(r));
+    };
+
+    const handleLoanSubmit = (data: {
+        loanerName: string;
+        loanType: string;
+        amount: number;
+        currency: string;
+        approximateDate: Date;
+    }) => {
+        console.log('Loan data:', data);
+        const token = Cookies.get("token");
+        fetch("http://localhost:8080/api/loans", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        }).then(r => console.log(r));
+    };
 
     return (
         <header className="p-2 text-bg-dark w-full">
@@ -48,10 +83,26 @@ function Header() {
                     <Link className="text-white nav-link px-2 hover:text-gray-300" to="/friends">
                         Loans
                     </Link>
+                    <button
+                        onClick={() => setIsSalaryModalOpen(true)}
+                        className="text-white nav-link px-2 hover:text-gray-300 bg-transparent border-none cursor-pointer"
+                    >
+                        Add Salary
+                    </button>
+                    <button
+                        onClick={() => setIsLoanModalOpen(true)}
+                        className="text-white nav-link px-2 hover:text-gray-300 bg-transparent border-none cursor-pointer"
+                    >
+                        Add Loan
+                    </button>
+
                 </nav>
                 
                 <div className="flex items-center justify-end space-x-2 mr-24"
                     style={{minHeight: '50px'}}>
+
+                <div className="flex items-center justify-end space-x-2"
+                     style={{minHeight: '50px'}}>
                     {!user ? (
                         <>
                             <Link to="/login">
@@ -71,6 +122,19 @@ function Header() {
                         </HeaderDropdown>
                     )}
                 </div>
+            </div>
+
+            <SalaryModal
+                isOpen={isSalaryModalOpen}
+                onClose={() => setIsSalaryModalOpen(false)}
+                onSubmit={handleSalarySubmit}
+            />
+
+            <LoanModal
+                isOpen={isLoanModalOpen}
+                onClose={() => setIsLoanModalOpen(false)}
+                onSubmit={handleLoanSubmit}
+            />
             </div>
         </header>
     );
